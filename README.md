@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Flask Resume App
 
 A modern, responsive portfolio website built with Flask, featuring a clean and professional design. This application serves as a dynamic resume/portfolio that showcases professional experience, skills, and projects in an interactive web format.
@@ -150,3 +151,6 @@ docker build -t flask-resume-app .
 # Run the container
 docker run -d -p 5001:5001 flask-resume-app
 ```
+=======
+# pipelining-exercise-part2
+>>>>>>> e70359a54195fe671b408cfa4a6ad804dbeea133
