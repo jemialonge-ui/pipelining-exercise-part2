@@ -46,6 +46,8 @@ jobs:
               id:   build-and-push
               run:  |
                 echo "pushing image to ECR"
+                echo ${{ steps.ecr-login.outputs.ecr-registry }}
+                echo  "${{ steps.ecr-login.outputs.ecr-registry }}/${{ env.ECR_REPO_NAME }}"
                 ls -laR templates/Dockerfile ##to check if Dockerfile is present in the expected location
                 docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/
                 docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} ${{ steps.ecr-login.outputs.aws-account-id }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
