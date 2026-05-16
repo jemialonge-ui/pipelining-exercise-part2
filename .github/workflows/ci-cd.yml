@@ -51,7 +51,20 @@ jobs:
             #    param1: value1
             #    param2: value2
 
-    #job2:
+    build-tag-and-push:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Build and Push Docker Image to ECR
+              run:  cat "pushing image to ECR"
+                # Build your Docker image here
+                #docker build -t my-image-name:${{ github.run_number }} .
+                
+                # Tag the image for ECR
+                #docker tag my-image-name:${{ github.run_number }} <aws_account_id>.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/my-image-name:${{ github.run_number }}
+                
+                # Push the image to ECR
+                #docker push <aws_account_id>.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/my-image-name:${{ github.run_number }}
     #    needs: job1 # This means job2 will only run after job1 is completed
     #    runs-on: #some runner
     #    steps:
