@@ -61,7 +61,8 @@ jobs:
               id:   build-and-push
               run:  |
                 echo "pushing image to ECR"
-                docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} ../templates/
+                ls -laR
+                docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} .
                 docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} ${{ steps.ecr-login.outputs.aws-account-id }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
 
                 # Build your Docker image here
