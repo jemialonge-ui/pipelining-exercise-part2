@@ -42,21 +42,6 @@ jobs:
               uses: aws-actions/amazon-ecr-login@v1
               id:   ecr-login
             
-            #- name: some-step
-            #    uses: #some action
-            #  with:
-            #    token: ${{ secrets.GITHUB_TOKEN }}
-            #- name: step5
-            #  run: #some command
-            #  with:
-                #some parameters
-            #    param1: value1
-            #    param2: value2
-
-    tag-and-push:
-        needs: build
-        runs-on: ubuntu-latest
-        steps:
             - name: Build and Push Docker Image to ECR
               id:   build-and-push
               run:  |
