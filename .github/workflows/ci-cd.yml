@@ -21,7 +21,8 @@ env:
     # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     AWS_REGION: us-east-1
     AWS_ACTIONS_ROLE_ARN: ${{ secrets.AWS_ACTIONS_ROLE_ARN }}
-
+    ECR_REPO_NAME: dev-work
+    IMAGE_TAG: ${{ github.run_number }}
 
 
 jobs:
@@ -39,6 +40,7 @@ jobs:
 
             - name: ECR_login
               uses: aws-actions/amazon-ecr-login@v1
+              id:   ecr-login
             
             #- name: some-step
             #    uses: #some action
@@ -51,12 +53,17 @@ jobs:
             #    param1: value1
             #    param2: value2
 
-    build-tag-and-push:
+    tag-and-push:
         needs: build
         runs-on: ubuntu-latest
         steps:
             - name: Build and Push Docker Image to ECR
-              run:  echo "pushing image to ECR"
+              id:   build-and-push
+              run:  |
+                echo "pushing image to ECR"
+                docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} .
+                docker tag ${{ steps.ecr-login.outputs.ecr-registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} ${{ steps.ecr-login.outputs.aws-account-id }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+
                 # Build your Docker image here
                 #docker build -t my-image-name:${{ github.run_number }} .
                 
