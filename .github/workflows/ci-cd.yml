@@ -56,7 +56,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Build and Push Docker Image to ECR
-              run:  cat "pushing image to ECR"
+              run:  echo "pushing image to ECR"
                 # Build your Docker image here
                 #docker build -t my-image-name:${{ github.run_number }} .
                 
