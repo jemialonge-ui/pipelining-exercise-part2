@@ -1,0 +1,69 @@
+##This is just a template for CI/CD workflow.
+##You can modify it according to your needs
+name: Build, Push,Test and Deploy Resume
+
+on:
+    #workflow_dispatch: # This allows you to manually trigger the workflow from the GitHub Actions tab
+    push:
+        branches: [ main, dev]
+    pull_request:
+        branches: [ main ]
+    
+
+env:
+    # Define any environment variables here
+    # For example:
+    # NODE_ENV: production
+    # API_KEY: ${{ secrets.API_KEY }}
+    # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    AWS_REGION: us-east-1
+    AWS_ACTIONS_ROLE_ARN: ${{ secrets.AWS_ACTIONS_ROLE_ARN }}
+
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: clone-repo
+              uses: actions/checkout@v3
+
+            - name: aws-credentials-config
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                role-to-assume: ${{ env.AWS_ACTIONS_ROLE_ARN }}
+                aws-region: ${{ env.AWS_REGION }}
+
+            - name: ECR_login
+              uses: aws-actions/amazon-ecr-login@v1
+            
+            #- name: some-step
+            #    uses: #some action
+            #  with:
+            #    token: ${{ secrets.GITHUB_TOKEN }}
+            #- name: step5
+            #  run: #some command
+            #  with:
+                #some parameters
+            #    param1: value1
+            #    param2: value2
+
+    #job2:
+    #    needs: job1 # This means job2 will only run after job1 is completed
+    #    runs-on: #some runner
+    #    steps:
+    #        - name: step1
+    #          run: #some command
+    #        - name: step2
+    #          uses: #some action
+    #        - name: step3
+    #          run: #some command
+    #          with:
+    #            #some parameters
+    #            param1: value1
+    #            param2: value2
+    #        - name: step4
+    #          uses: #some action
+    #          with:
+    #            #some parameters
+    #            param1: value1
+    #            param2: value2
