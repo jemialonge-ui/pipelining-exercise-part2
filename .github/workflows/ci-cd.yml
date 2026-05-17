@@ -130,6 +130,12 @@ jobs:
                     IMAGE_URI=${{ needs.build.outputs.image-uri }}
                     echo "New Image URI: $IMAGE_URI"
                     jq --arg IMAGE_URI "$IMAGE_URI" '.containerDefinitions[0].image = $IMAGE_URI' task-def.json > updated-task-def.json
+                    
+            - name: Display updated Task Definition
+              id: display-td
+              run: |
+                    echo "Updated Task Definition:"
+                    cat updated-task-def.json
 
             - name: Register new Task Definition
               id: register-td
