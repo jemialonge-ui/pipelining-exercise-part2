@@ -132,7 +132,7 @@ jobs:
                     IMAGE_URI="${{ needs.build.outputs.image-uri }}"
                     echo "New Image URI: $IMAGE_URI"
 
-                    jq --arg IMAGE_URI "${{ needs.Build.outputs.image-uri }}" '.containerDefinitions[0].image = $IMAGE_URI | 
+                    jq --arg IMAGE_URI "${{ needs.build.outputs.image-uri }}" '.containerDefinitions[0].image = $IMAGE_URI | 
                     del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt)' task-definition.json > register-task-definition.json
 
 
