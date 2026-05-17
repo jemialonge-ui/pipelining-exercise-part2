@@ -21,7 +21,7 @@ env:
     # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     AWS_REGION: us-east-1
     AWS_ACTIONS_ROLE_ARN: ${{ secrets.AWS_ACTIONS_ROLE_ARN }}
-    ECR_REPO_NAME: dev-test
+    ECR_REPO_NAME: dev-work
     IMAGE_TAG: ${{ github.run_number }}
 
 
