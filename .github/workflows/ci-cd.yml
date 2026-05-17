@@ -117,7 +117,7 @@ jobs:
               with:
                     task-definition: ${{ env.ECS_TASK_DEFINITION }}
                     container-name: ${{ env.container_name }}
-                    image: ${{ steps.build-image.outputs.image }}
+                    image: ${{ steps.build-image.outputs.image-uri }}
                
             - name: Deploy to Amazon ECS
               id:   deploy-ecs 
