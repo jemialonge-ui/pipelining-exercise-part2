@@ -108,8 +108,8 @@ jobs:
         needs: build
         runs-on: ubuntu-latest
         steps:
-            - name: clone-repo
-              uses: actions/checkout@v4
+            #- name: clone-repo
+            #  uses: actions/checkout@v4
 
             - name: aws-credentials-config
               uses: aws-actions/configure-aws-credentials@v5
@@ -127,10 +127,11 @@ jobs:
               id: update-td
               run: |
                     echo "Updating Task Definition with new image"
-                    IMAGE_URI=${{ needs.build.outputs.image-uri }}
+                    #IMAGE_URI=${{ needs.build.outputs.image-uri }}
                     echo "New Image URI: $IMAGE_URI"
-                    jq --arg IMAGE_URI "$IMAGE_URI" '.containerDefinitions[0].image = $IMAGE_URI' task-def.json > updated-task-def.json
-                    
+                    jq --arg IMAGE_URI "${{ needs.build.outputs.image-uri }}" '.containerDefinitions[0].image = $IMAGE_URI' task-def.json > updated-task-def.json
+                    del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities) | . > register-task-def.json
+ 
             - name: Display updated Task Definition
               id: display-td
               run: |
@@ -139,12 +140,10 @@ jobs:
 
             - name: Register new Task Definition
               id: register-td
-              uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-              with:
-                task-definition: updated-task-def.json
-                service: ${{ env.ECS_SERVICE }}
-                cluster: ${{ env.ECS_CLUSTER }}
-
+              run: |
+                    echo "Registering new Task Definition"
+                    aws ecs register-task-definition --cli-input-json file://register-task-def.json
+                    echo "NEW_TASK_DEFINTION=$(aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} --query 'taskDefinition.taskDefinitionArn' --output text)" >> $GITHUB_ENV
                     #aws ecs register-task-definition --cli-input-json file://updated-task-def.json
 
             - name: Update ECS Service to use new Task Definition
