@@ -42,12 +42,15 @@ jobs:
               uses: aws-actions/amazon-ecr-login@v1
               id:   ecr-login
             
+            - name: Echo Registry
+              run: |
+                echo 'My ECR Registry is: ${{ steps.ecr-login.outputs.registry }}'
+                echo 'My ECR Repository Name is: ${{ env.ECR_REPO_NAME }}'
+
             - name: Build and Push Docker Image to ECR
               id:   build-and-push
               run:  |
                 echo "pushing image to ECR"
-                echo "my registry: ${{ steps.ecr-login.outputs.ecr-registry }}"
-                echo "my repo name: ${{ env.ECR_REPO_NAME }}"
                 ls -laR templates/Dockerfile ##to check if Dockerfile is present in the expected location
                 docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/
                 docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} ${{ steps.ecr-login.outputs.aws-account-id }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
