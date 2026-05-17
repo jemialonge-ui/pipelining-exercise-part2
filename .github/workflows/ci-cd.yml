@@ -49,7 +49,7 @@ jobs:
 
             - name: Build and Push Docker Image to ECR
               id:   build-and-push
-              run:  |
+              run:  | 
                 echo "pushing image to ECR"
                 ls -laR templates/Dockerfile ##to check if Dockerfile is present in the expected location
                 echo "building docker image"
