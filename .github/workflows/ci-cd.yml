@@ -47,6 +47,20 @@ jobs:
                 echo 'My ECR Registry is: ${{ steps.ecr-login.outputs.registry }}'
                 echo 'My ECR Repository Name is: ${{ env.ECR_REPO_NAME }}'
 
+            - name: Pre scanning using trivy
+              uses: aquasecurity/trivy-action@v0.20.0
+              with:
+                scan-type: 'fs' # Type of scan (fs for filesystem, image for container images)
+                scan-ref: '.'   # Path to the directory containing the Dockerfile
+                exit-code: '1'  # Exit with code 1 if vulnerabilities are found
+                ignore-unfixed: true # Ignore vulnerabilities that do not have a fix available
+                severity: 'CRITICAL, HIGH' # Only fail the build if there are CRITICAL
+
+            - name: Check Dockerfile
+              run: |
+                echo "Checking if Dockerfile exists in the expected location"
+                ls -laR templates/Dockerfile
+
             - name: Build and Push Docker Image to ECR
               id:   build-image
               run:  | 
@@ -56,6 +70,15 @@ jobs:
                 echo "docker build -t ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/"
                 docker build -t ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/
 
+            - name: Post scanning using trivy
+              uses: aquasecurity/trivy-action@master
+              with:
+                image-ref: ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+                format: 'table' # Output format (table, json, etc.)
+                exit-code: '1' # Exit with code 1 if vulnerabilities are found
+                severity: 'CRITICAL, HIGH' # Only fail the build if there are CRITICAL or HIGH vulnerabilities
+                ignore-unfixed: true # Ignore vulnerabilities that do not have a fix available
+
             - name: Push Docker Image to ECR
               id:   push-image
               run:  |
@@ -63,6 +86,7 @@ jobs:
                     echo "docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}" 
                     docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} 
 
+                 
                 # Build your Docker image here
                 #docker build -t my-image-name:${{ github.run_number }} .
                 
