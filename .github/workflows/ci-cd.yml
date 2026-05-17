@@ -25,7 +25,8 @@ env:
     IMAGE_TAG: ${{ github.run_number }}
     ECS_CLUSTER: nginx-cluster
     ECS_SERVICE: nginx-service
-    ECS_TASK_DEFINITION: templates/td.json
+    #ECS_TASK_DEFINITION: templates/td.json
+    ECS_TASK_DEFINITION: nginx-task
     ECS_TASK_EXECUTION_ROLE: ${{ secrets.AWS_EXECUTION_ROLE_ARN }}
     container_name: nginx
     
@@ -116,18 +117,38 @@ jobs:
                 role-to-assume: ${{ env.AWS_ACTIONS_ROLE_ARN }}
                 aws-region: ${{ env.AWS_REGION }}
 
-            - name: Render ECS Task Definition
-              id:   render-task-def
-              uses: aws-actions/amazon-ecs-render-task-definition@v1
-              with:
-                    task-definition: ${{ env.ECS_TASK_DEFINITION }}
-                    container-name: ${{ env.container_name }}
-                    image: ${{ needs.build.outputs.image-uri }}
+            - name: Download Task Definition from ECS
+              id: download-td
+              run: |
+                    echo "Downloading Task Definition from ECS"
+                    aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} --query 'taskDefinition' > task-def.json
+
+            - name: Update Task Definition with new image
+              id: update-td
+              run: |
+                    echo "Updating Task Definition with new image"
+                    IMAGE_URI=${{ needs.build.outputs.image-uri }}
+                    echo "New Image URI: $IMAGE_URI"
+                    jq --arg IMAGE_URI "$IMAGE_URI" '.containerDefinitions[0].image = $IMAGE_URI' task-def.json > updated-task-def.json
+
+            - name: Register new Task Definition
+              id: register-td
+              run: |
+                    echo "Registering new Task Definition"
+                    aws ecs register-task-definition --cli-input-json file://updated-task-def.json
+
+            #- name: Render ECS Task Definition
+            #  id:   render-task-def
+            #  uses: aws-actions/amazon-ecs-render-task-definition@v1
+            #  with:
+            #        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+            #        container-name: ${{ env.container_name }}
+            #        image: ${{ needs.build.outputs.image-uri }}
                
-            - name: Deploy to Amazon ECS
-              id:   deploy-ecs 
-              uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-              with: 
-                    cluster: ${{ env.ECS_CLUSTER }}
-                    service: ${{ env.ECS_SERVICE }}
-                    task-definition: ${{ steps.render-task-def.outputs.task-definition }}
+            #- name: Deploy to Amazon ECS
+            #  id:   deploy-ecs 
+            #  uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+            #  with: 
+            #        cluster: ${{ env.ECS_CLUSTER }}
+            #        service: ${{ env.ECS_SERVICE }}
+            #        task-definition: ${{ steps.render-task-def.outputs.task-definition }}
