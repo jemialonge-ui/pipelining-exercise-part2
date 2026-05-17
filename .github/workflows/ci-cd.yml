@@ -139,14 +139,12 @@ jobs:
 
             - name: Register new Task Definition
               id: register-td
-              run: |
-                    echo "Registering new Task Definition"
-                    uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-                    with:  
-                        task-definition: updated-task-def.json
-                        service: ${{ env.ECS_SERVICE }}
-                        cluster: ${{ env.ECS_CLUSTER }}
-                        
+              uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+              with:
+                task-definition: updated-task-def.json
+                service: ${{ env.ECS_SERVICE }}
+                cluster: ${{ env.ECS_CLUSTER }}
+
                     #aws ecs register-task-definition --cli-input-json file://updated-task-def.json
 
             - name: Update ECS Service to use new Task Definition
