@@ -27,7 +27,7 @@ env:
     ECS_SERVICE: nginx-service
     ECS_TASK_DEFINITION: templates/td.json
     ECS_TASK_EXECUTION_ROLE: ${{ secrets.AWS_EXECUTION_ROLE_ARN }}
-    container_name: nginx-container
+    container_name: nginx
     
 
 jobs:
