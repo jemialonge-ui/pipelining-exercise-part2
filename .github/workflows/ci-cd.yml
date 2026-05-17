@@ -65,6 +65,7 @@ jobs:
                 # Tag the image for ECR
                 #docker tag my-image-name:${{ github.run_number }} <aws_account_id>.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/my-image-name:${{ github.run_number }}
                 
+                #comment
                 # Push the image to ECR
                 #docker push <aws_account_id>.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/my-image-name:${{ github.run_number }}
     #    needs: job1 # This means job2 will only run after job1 is completed
