@@ -52,7 +52,11 @@ jobs:
               run:  |
                 echo "pushing image to ECR"
                 ls -laR templates/Dockerfile ##to check if Dockerfile is present in the expected location
+                echo "building docker image"
                 docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/
+                echo "docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/"
+                echo "tagging docker image for ECR"
+                echo "docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}" 
                 docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} 
 
                 # Build your Docker image here
