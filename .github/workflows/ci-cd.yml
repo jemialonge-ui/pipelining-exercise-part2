@@ -134,7 +134,7 @@ jobs:
                 jq --arg IMAGE_URI "$IMAGE_URI" '.containerDefinitions[0].image = $IMAGE_URI
                 | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .deregisteredAt, .registeredBy)' \
                 task-def.json > updated-task-def.json
-                
+
             - name: Display updated Task Definition
               id: display-td
               run: |
@@ -145,8 +145,8 @@ jobs:
               id: register-td
               run: |
                     echo "Registering new Task Definition"
-                    aws ecs register-task-definition --cli-input-json file://register-task-def.json
-                    echo "NEW_TASK_DEFINTION=$(aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} --query 'taskDefinition.taskDefinitionArn' --output text)" >> $GITHUB_ENV
+                    aws ecs register-task-definition --cli-input-json file://updated-task-def.json
+                    #echo "NEW_TASK_DEFINTION=$(aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} --query 'taskDefinition.taskDefinitionArn' --output text)" >> $GITHUB_ENV
                     #aws ecs register-task-definition --cli-input-json file://updated-task-def.json
 
             - name: Update ECS Service to use new Task Definition
