@@ -56,12 +56,12 @@ jobs:
                 echo "docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/"
                 docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/
 
-            - name: Tag Docker Image for ECR
-              id:   tag-image
+            - name: Push Docker Image to ECR
+              id:   push-image
               run:  |
-                    echo "tagging docker image for ECR"
-                    echo "docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}" 
-                    docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} 
+                    echo "Pushing docker image for ECR"
+                    echo "docker push ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}" 
+                    docker push ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} 
 
                 # Build your Docker image here
                 #docker build -t my-image-name:${{ github.run_number }} .
