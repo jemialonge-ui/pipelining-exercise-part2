@@ -76,7 +76,7 @@ jobs:
                 image-ref: ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
                 format: 'table' # Output format (table, json, etc.)
                 exit-code: '1' # Exit with code 1 if vulnerabilities are found
-                severity: 'CRITICAL, HIGH' # Only fail the build if there are CRITICAL or HIGH vulnerabilities
+                severity: 'CRITICAL,HIGH' # Only fail the build if there are CRITICAL or HIGH vulnerabilities
                 ignore-unfixed: true # Ignore vulnerabilities that do not have a fix available
 
             - name: Push Docker Image to ECR
