@@ -143,7 +143,7 @@ jobs:
                     echo "Registering new Task Definition"
                     uses: aws-actions/amazon-ecs-deploy-task-definition@v2
                     with:  
-                        task-definition: fixed-task-def.json
+                        task-definition: updated-task-def.json
                         service: ${{ env.ECS_SERVICE }}
                         cluster: ${{ env.ECS_CLUSTER }}
                         
