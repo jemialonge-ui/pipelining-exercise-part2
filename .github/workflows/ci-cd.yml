@@ -152,7 +152,8 @@ jobs:
               id: update-service
               run: |
                     echo "Updating ECS Service to use new Task Definition"
-                    aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ env.NEW_TASK_DEFINITION }}} --force-new-deployment
+                    #aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ env.NEW_TASK_DEFINITION }}} --force-new-deployment
+                    aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ steps.register-td.outputs.task-definition }} --force-new-deployment
 
             #- name: Render ECS Task Definition
             #  id:   render-task-def
