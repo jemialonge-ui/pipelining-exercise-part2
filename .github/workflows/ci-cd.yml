@@ -122,7 +122,7 @@ jobs:
               run: |
                     echo "Downloading Task Definition from ECS"
                     #aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} --query 'taskDefinition' > task-def.json
-                    aws ecs describe-task-definition --task-definition ${{ env.TASK_DEFINITION }} --query taskDefinition > task-definition.json
+                    aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} --query taskDefinition > task-definition.json
 
             - name: Update Task Definition with new image
               id: update-td
