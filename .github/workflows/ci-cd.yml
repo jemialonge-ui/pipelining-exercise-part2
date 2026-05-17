@@ -131,9 +131,8 @@ jobs:
                 IMAGE_URI="${{ needs.build.outputs.image-uri }}"
                 echo "New Image URI: $IMAGE_URI"
 
-                jq --arg IMAGE_URI "$IMAGE_URI" '.containerDefinitions[0].image = $IMAGE_URI
-                | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .deregisteredAt, .registeredBy)' \
-                task-def.json > updated-task-def.json
+                jq --arg IMAGE_URI "$IMAGE_URI" '.containerDefinitions[0].image = $IMAGE_URI |
+                del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .deregisteredAt, .registeredBy)'  task-def.json > updated-task-def.json
 
             - name: Display updated Task Definition
               id: display-td
