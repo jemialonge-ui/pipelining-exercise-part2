@@ -140,20 +140,37 @@ jobs:
                     echo "Updated Task Definition:"
                     cat updated-task-def.json
 
+            #- name: Register new Task Definition
+            #  id: register-td
+            #  run: |
+            #        echo "Registering new Task Definition"
+            #        aws ecs register-task-definition --cli-input-json file://updated-task-def.json
+            #        echo "NEW_TASK_DEFINTION=$(aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} --query 'taskDefinition.taskDefinitionArn' --output text)" >> $GITHUB_ENV
+            #        #aws ecs register-task-definition --cli-input-json file://updated-task-def.json
+
+            #- name: Update ECS Service to use new Task Definition
+            #  id: update-service
+            #  run: |
+            #        echo "Updating ECS Service to use new Task Definition"
+            #        #aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ env.NEW_TASK_DEFINITION }}} --force-new-deployment
+            #        aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ steps.register-td.outputs.task-definition }} --force-new-deployment
+
             - name: Register new Task Definition
               id: register-td
               run: |
-                    echo "Registering new Task Definition"
-                    aws ecs register-task-definition --cli-input-json file://updated-task-def.json
-                    echo "NEW_TASK_DEFINTION=$(aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} --query 'taskDefinition.taskDefinitionArn' --output text)" >> $GITHUB_ENV
-                    #aws ecs register-task-definition --cli-input-json file://updated-task-def.json
+                aws ecs register-task-definition --cli-input-json file://updated-task-def.json
+                NEW_TASK_DEF_ARN=$(aws ecs describe-task-definition \
+                  --task-definition ${{ env.ECS_TASK_DEFINITION }} \
+                  --query 'taskDefinition.taskDefinitionArn' --output text)
+                echo "task-definition=${NEW_TASK_DEF_ARN}" >> $GITHUB_OUTPUT
 
             - name: Update ECS Service to use new Task Definition
-              id: update-service
               run: |
-                    echo "Updating ECS Service to use new Task Definition"
-                    #aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ env.NEW_TASK_DEFINITION }}} --force-new-deployment
-                    aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ steps.register-td.outputs.task-definition }} --force-new-deployment
+                aws ecs update-service \
+                  --cluster ${{ env.ECS_CLUSTER }} \
+                  --service ${{ env.ECS_SERVICE }} \
+                  --task-definition ${{ steps.register-td.outputs.task-definition }} \
+                  --force-new-deployment
 
             #- name: Render ECS Task Definition
             #  id:   render-task-def
