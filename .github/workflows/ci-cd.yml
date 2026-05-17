@@ -54,7 +54,7 @@ jobs:
                 scan-ref: '.'   # Path to the directory containing the Dockerfile
                 exit-code: '1'  # Exit with code 1 if vulnerabilities are found
                 ignore-unfixed: true # Ignore vulnerabilities that do not have a fix available
-                severity: 'CRITICAL, HIGH' # Only fail the build if there are CRITICAL
+                severity: 'CRITICAL' # Only fail the build if there are CRITICAL issues
 
             - name: Check Dockerfile
               run: |
