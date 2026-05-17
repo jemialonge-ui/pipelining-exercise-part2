@@ -33,6 +33,8 @@ env:
 jobs:
     build:
         runs-on: ubuntu-latest
+        outputs:
+            image-uri: ${{ steps.get-image-uri.outputs.image-uri }}
         steps:
             - name: clone-repo
               uses: actions/checkout@v4
@@ -98,8 +100,8 @@ jobs:
               id:   get-image-uri
               run:  |
                     echo "Getting ECR Image URI"
-                    echo "IMAGE_URI=${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}" 
-                    echo "IMAGE_URI=${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}" >> $GITHUB_ENV    
+                    IMAGE_URI=${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+                    echo "image-uri=${IMAGE_URI}" >> $GITHUB_OUTPUT
         
     deploy:
         needs: build
@@ -117,7 +119,7 @@ jobs:
               with:
                     task-definition: ${{ env.ECS_TASK_DEFINITION }}
                     container-name: ${{ env.container_name }}
-                    image: ${{ steps.build-image.outputs.image-uri }}
+                    image: ${{ needs.build.outputs.image-uri }}
                
             - name: Deploy to Amazon ECS
               id:   deploy-ecs 
