@@ -108,6 +108,8 @@ jobs:
         needs: build
         runs-on: ubuntu-latest
         steps:
+            #- name: clone-repo
+            #  uses: actions/checkout@v4
 
             - name: aws-credentials-config
               uses: aws-actions/configure-aws-credentials@v5
