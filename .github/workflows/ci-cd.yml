@@ -127,13 +127,13 @@ jobs:
             - name: Update Task Definition with new image
               id: update-td
               run: |
-                echo "Updating Task Definition with new image"
+                    echo "Updating Task Definition with new image"
 
-                IMAGE_URI="${{ needs.build.outputs.image-uri }}"
-                echo "New Image URI: $IMAGE_URI"
+                    IMAGE_URI="${{ needs.build.outputs.image-uri }}"
+                    echo "New Image URI: $IMAGE_URI"
 
-                jq --arg IMAGE_URI "${{ needs.Build.outputs.image-uri }}" '.containerDefinitions[0].image = $IMAGE_URI | 
-                del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt)' task-definition.json > register-task-definition.json
+                    jq --arg IMAGE_URI "${{ needs.Build.outputs.image-uri }}" '.containerDefinitions[0].image = $IMAGE_URI | 
+                    del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt)' task-definition.json > register-task-definition.json
 
 
             - name: Display updated Task Definition
@@ -144,12 +144,12 @@ jobs:
 
             - name: Register new task definition
               run: |
-                aws ecs register-task-definition --cli-input-json file://register-task-definition.json
-                echo "NEW_TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${{ env.TASK_DEFINITION }} --query 'taskDefinition.taskDefinitionArn' --output text)" >> $GITHUB_ENV
+                    aws ecs register-task-definition --cli-input-json file://register-task-definition.json
+                    echo "NEW_TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${{ env.TASK_DEFINITION }} --query 'taskDefinition.taskDefinitionArn' --output text)" >> $GITHUB_ENV
       
             - name: Update ECS service
               run: |
-                aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ env.NEW_TASK_DEFINITION }} --force-new-deployment            
+                    aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ env.NEW_TASK_DEFINITION }} --force-new-deployment            
 
             #- name: Register new Task Definition
             #  id: register-td
