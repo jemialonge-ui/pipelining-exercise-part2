@@ -48,16 +48,20 @@ jobs:
                 echo 'My ECR Repository Name is: ${{ env.ECR_REPO_NAME }}'
 
             - name: Build and Push Docker Image to ECR
-              id:   build-and-push
+              id:   build-image
               run:  | 
                 echo "pushing image to ECR"
                 ls -laR templates/Dockerfile ##to check if Dockerfile is present in the expected location
                 echo "building docker image"
-                docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/
                 echo "docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/"
-                echo "tagging docker image for ECR"
-                echo "docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}" 
-                docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} 
+                docker build -t ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/
+
+            - name: Tag Docker Image for ECR
+              id:   tag-image
+              run:  |
+                    echo "tagging docker image for ECR"
+                    echo "docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}" 
+                    docker tag ${{ steps.ecr-login.outputs.ecr-registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} 
 
                 # Build your Docker image here
                 #docker build -t my-image-name:${{ github.run_number }} .
