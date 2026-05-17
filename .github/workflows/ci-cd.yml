@@ -21,7 +21,7 @@ env:
     # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     AWS_REGION: us-east-1
     AWS_ACTIONS_ROLE_ARN: ${{ secrets.AWS_ACTIONS_ROLE_ARN }}
-    ECR_REPO_NAME: dev-work
+    ECR_REPO_NAME: dev-test
     IMAGE_TAG: ${{ github.run_number }}
 
 
@@ -53,8 +53,8 @@ jobs:
                 echo "pushing image to ECR"
                 ls -laR templates/Dockerfile ##to check if Dockerfile is present in the expected location
                 echo "building docker image"
-                echo "docker build -t ${{ steps.ecr-login.outputs.registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/"
-                docker build -t ${{ steps.ecr-login.outputs.registry }}${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/
+                echo "docker build -t ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/"
+                docker build -t ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} templates/
 
             - name: Push Docker Image to ECR
               id:   push-image
